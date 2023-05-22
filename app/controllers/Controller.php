@@ -6,14 +6,15 @@ use Exception;
 
 abstract class Controller{
 
-    protected  function view(string $view, array $data){
+    protected  function view(string $view, array $data,$title = ''){
         $viewPath = '../app/views/'.$view.'.php';
         if(!file_exists($viewPath)){
             throw new Exception("A view {$view} não existe");
         }
          
         $templates = new Engine('../app/views');
-        echo $templates->render($view, $data);
+       
+        echo $templates->render($view, ["data" => $data, "title" => $title]);
     }
 
   

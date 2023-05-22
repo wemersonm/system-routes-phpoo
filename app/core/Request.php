@@ -22,18 +22,48 @@ class Request
     public static function only(string|array $only)
     {
         $fieldsPost = Request::all();
-        $fields = [];
         $fieldsPostKeys = array_keys($fieldsPost);
-        
+
         if (is_string($only)) {
-            $fields[$only] =  $fieldsPost[$only];
+            return $fieldsPost[$only];
         }
-         foreach ($fieldsPostKeys as $index => $value) {
-           
-        } 
-        return  $fieldsPost;
-       // return $fieldsPostKeys;
+        foreach ($fieldsPostKeys as $index => $value) {
+            if (!in_array($value, $only)) {
+                unset($fieldsPost[$value]);
+            }
+        }
+        return $fieldsPost;
     }
+
+    public static function except(string|array $excepts)
+    {
+        $fieldsPost = Request::all();
+        $fieldsPostKeys = array_keys($fieldsPost);
+        if (is_array($excepts)) {
+            foreach ($fieldsPostKeys as $index => $value) {
+                if (in_array($value, $excepts)) {
+                    unset($fieldsPost[$value]);
+                }
+            }
+            return $fieldsPost;
+        }
+        unset($fieldsPost[$excepts]);
+        return $fieldsPost;
+    }
+
+    public static function query($name){
+        if(!isset($_GET[$name])){
+            throw new Exception("Não existe GET {$name}");
+        }
+        return $_GET[$name];
+    }
+    public static function toJson(array $data){
+        return json_encode($data);
+    }
+    public static function toArray($data){
+        return json_decode($data);
+    }
+
+    
+    
 }
-//only => [0 => "email",
-//         1 => "firstName"]
