@@ -12,7 +12,7 @@ class Routes
                 '/user/[0-9]+' => "UserController@edit"
             ],
             'POST' => [
-                '/user/update/[0-9]+' => 'UserController@update'
+                '/user/update' => 'UserController@update'
             ]
         ];
     }
