@@ -8,14 +8,19 @@
     ],
     "require": {
         "league/plates": "^3.5",
-        "symfony/var-dumper": "^6.2"
+        "symfony/var-dumper": "^6.2",
+        "phpmailer/phpmailer": "^6.8",
+        "vlucas/phpdotenv": "^5.5"
     },
     "autoload": {
         "psr-4": {
             "app\\":"app/"
         },
         "files":[
-            "app/helpers/csrf.php"
+            "app/helpers/csrf.php",
+            "app/helpers/flashMessage.php",
+            "app/helpers/redirect.php",
+            "app/helpers/env.php"
         ]
     }
 }

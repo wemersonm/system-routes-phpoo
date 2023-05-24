@@ -22,7 +22,7 @@ class Filters
 
         $value = strip_tags($formater);
 
-        $this->filters['where'][] = "{$field} {$operator} {$value} {$logic}";
+        $this->filters['where'][] = "{$field} {$operator} :{$field} {$logic}";
     }
 
     public function limit(int $limit)

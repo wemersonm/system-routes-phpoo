@@ -9,10 +9,12 @@ class Routes
         return [
             'GET' => [
                 '/' => 'HomeController@index',
-                '/user/[0-9]+' => "UserController@edit"
+                '/user/[0-9]+' => "UserController@edit",
+                '/contact' => "ContactController@index"
             ],
             'POST' => [
-                '/user/update' => 'UserController@update'
+                '/user/update' => 'UserController@update',
+                '/contact' => 'ContactController@send'
             ]
         ];
     }

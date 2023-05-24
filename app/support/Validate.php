@@ -9,41 +9,58 @@ class Validate
 {
     use Validations;
 
-    public function validations(array $data)
-    {
-        $validations = [];
-        $param = '';
-        foreach ($data as $field => $validation) {
-            if (substr_count($validation, "|") <= 0) { // validação unica
-                if (substr_count($validation, ":")) { // existe param ?
-                    list($validation, $param) = explode(":", $validation);
-                }
-                if (!method_exists($this, $validation)) {
-                    throw new Exception("O método {$validation} não existe");
-                }
-                // chama a validation
-                $validations[$field] = $this->$validation($field, $param);
-            } else { // mais de 1 validação
-                $explodeValidations = explode("|", $validation);
+    private $validations = [];
 
-                foreach ($explodeValidations as $validation) {
-                    if (substr_count($validation, ":")) {
-                        list($validation, $param) = explode(":", $validation);
-                    }
-                    if (!method_exists($this, $validation)) {
-                        throw new Exception("O método {$validation} não existe");
-                    }
-                    // chama a validation
-                    $validations[$field] = $this->$validation($field, $param);
-                }
+    public function getMethodAndParams($validation, $param)
+    {
+        if (substr_count($validation, ":") > 0) { // existe param ?
+            list($validation, $param) = explode(":", $validation);
+            
+        }
+        return [$validation, $param];
+    }
+
+    public function methodValidationExists($validation)
+    {
+        if (!method_exists($this, $validation)) {
+            throw new Exception("O método {$validation} não existe");
+        }
+    }
+    private function uniqueValidation($validation, $field, $param)
+    {
+        list($validation, $param) = $this->getMethodAndParams($validation, $param);
+        $this->methodValidationExists($validation);
+        $this->validations[$field] = $this->$validation($field, $param);
+    }
+    private function multipleValidation($explodeValidations, $field, $param)
+    {
+        foreach ($explodeValidations as $index => $validation) {
+            list($validation, $param) = $this->getMethodAndParams($validation, $param);
+            
+            $this->methodValidationExists($validation);
+            $this->validations[$field] = $this->$validation($field, $param);
+            
+            if (!$this->validations[$field]) {
+                break;
             }
         }
-
-        if (in_array(false, $validations)) {
-            dd($validations);
+    }
+    public function validations(array $data)
+    {
+        $param = '';
+        foreach ($data as $field => $validation) {
+            $havePipes = substr_count($validation, "|") == 0 ? false : true;
+            if (!$havePipes) {
+                $this->uniqueValidation($validation, $field, $param);
+            } else {
+                $explodeValidations = explode("|", $validation);
+                $this->multipleValidation($explodeValidations, $field, $param);
+            }
+        }
+        if (in_array(false, $this->validations)) {
             return false;
         }
-
-        return $validations;
+       
+        return $this->validations;
     }
 }

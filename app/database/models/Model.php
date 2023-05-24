@@ -21,6 +21,7 @@ abstract class Model
     public function setFilters(Filters $filters)
     {
         $this->filters = $filters->dump();
+        var_dump($this->filters);
     }
 
     public  function setPagination(Pagination $pagination){

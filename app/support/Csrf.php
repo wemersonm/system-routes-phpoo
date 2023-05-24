@@ -22,7 +22,7 @@ class Csrf
             throw new Exception("Token invalido :#");
         }
 
-      $token = Request::only("csrfToken");
+      $token = Request::input("csrfToken");
 
       if($_SESSION['csrfToken'] != $token){
         throw new Exception("Token invalido :#");

@@ -17,13 +17,18 @@ class HomeController extends Controller
         $pagination = new Pagination;
         $user->setFields("persons.id,persons.first_name,persons.last_name,persons.email");
 
+        $filters->where('id', '<',50);
+        $user->setFilters($filters);
 
+        $data['data'] = $user->fetchAll();
+        var_dump($data['data']);
+        die;
         $pagination->setTotalItens($user->count());
         $pagination->setItensPerPage(10);
 
         $user->setPagination($pagination);
-
-        $data['data'] = $user->fetchAll();
+        
+      
         $data['totalPages'] = $pagination->getTotalPages();
         $data['currentPage'] = $_GET['page'] ?? 1;
 
